@@ -123,7 +123,6 @@ brew install --cask google-chrome # Web browser
 brew install --cask firefox # Open-source web browser
 
 # Communication
-brew install --cask zoom # Video Conferencing
 brew install --cask discord # All-in-one voice and text chat
 
 # Media & Graphics

@@ -164,6 +164,8 @@ echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.zshrc
 # Rust
 "Installing Rust and cargo related packages"
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source "$HOME/.cargo/env"
+echo "source \"$HOME/.cargo/env\"" >> ~/.zshrc
 
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install

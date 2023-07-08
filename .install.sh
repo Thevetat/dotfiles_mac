@@ -145,6 +145,7 @@ brew tap homebrew/cask-fonts
 brew install --cask font-jetbrains-mono-nerd-font # High-quality font for developers
 
 # NVM
+echo "Installing node and configuring NPM"
 echo "source $(brew --prefix nvm)/nvm.sh" >> ~/.zshrc
 nvm install --lts
 npm install -g npm@latest
@@ -153,12 +154,14 @@ npm set init.author.email "thevetat@proton.me"
 npm set init.author.url "https://www.thevetatsramblings.com"
 
 #Go
+echo "Installing Go"
 go install mvdan.cc/gofumpt@latest
 go install -v github.com/incu6us/goimports-reviser/v3@latest
 go install github.com/fatih/gomodifytags@latest
 echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.zshrc
 
 # Rust
+"Installing Rust and cargo related packages"
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -228,8 +231,8 @@ defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
 
 # Copying and checking out configuration files
 echo "Planting Configuration Files..."
-[ ! -d "$HOME/dotfiles" ] && git clone --bare git@github.com:FelixKratz/dotfiles.git $HOME/dotfiles
-git --git-dir=$HOME/dotfiles/ --work-tree=$HOME checkout master
+[ ! -d "$HOME/dotfiles" ] && git clone --bare git@github.com:Thevetat/dotfiles_mac.git $HOME/dotfiles
+git --git-dir=$HOME/dotfiles/ --work-tree=$HOME checkout main
 
 # Installing Fonts
 git clone git@github.com:shaunsingh/SFMono-Nerd-Font-Ligaturized.git /tmp/SFMono_Nerd_Font

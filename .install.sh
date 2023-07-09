@@ -154,15 +154,31 @@ brew install --cask sloth # Network Connections Viewer
 brew tap homebrew/cask-fonts
 brew install --cask font-jetbrains-mono-nerd-font # High-quality font for developers
 
-# NVM
-echo "Installing node and configuring NPM"
-echo "source $(brew --prefix nvm)/nvm.sh" >> ~/.zshrc
-source ~/.zshrc
-nvm install --lts
-npm install -g npm@latest
+# Check if NVM is installed
+if ! command -v nvm &> /dev/null
+then
+    echo "NVM is not installed. Installing NVM and configuring NPM..."
+    echo "source $(brew --prefix nvm)/nvm.sh" >> ~/.zshrc
+    source ~/.zshrc
+    nvm install --lts
+else
+    echo "NVM is already installed. Skipping NVM installation."
+fi
+
+# Check if npm is installed
+if command -v npm &> /dev/null
+then
+    echo "npm is installed. Configuring npm..."
+    npm install -g npm@latest
+else
+    echo "npm is not installed. Attempting to reinstall Node and npm..."
+    nvm install --lts
+fi
+
 npm set init.author.name "Thevetat"
 npm set init.author.email "thevetat@proton.me"
 npm set init.author.url "https://www.thevetatsramblings.com"
+
 
 #Go
 echo "Installing Go"

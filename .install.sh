@@ -27,34 +27,19 @@ else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/thevetat/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
+    export HOMEBREW_NO_ENV_HINTS=1
     brew analytics off
 fi
-
-# Check if Homebrew taps are already installed
-if brew tap | grep -q 'homebrew/cask-fonts'; then
-    echo "Homebrew cask-fonts tap is already installed."
-else
-    echo "Installing Homebrew cask-fonts tap..."
-    brew tap homebrew/cask-fonts
-fi
-
-if brew tap | grep -q 'FelixKratz/formulae'; then
-    echo "Homebrew FelixKratz/formulae tap is already installed."
-else
-    echo "Installing Homebrew FelixKratz/formulae tap..."
-    brew tap FelixKratz/formulae
-fi
-
-
 
 # Git
 echo "Configuring Git"
 brew install gh # Github CLI
 
-git config --global user.name "thevetat"
+git config --global user.name "Thevetat"
 git config --global user.email "thevetat@proton.me"
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 git config --global init.defaultBranch main
+git config -l
 
 # SSH
 echo "Configuring SSH"
@@ -72,30 +57,87 @@ if [[ ! -f ~/.ssh/github ]] && [[ ! -f ~/.ssh/gitlab ]]; then
 
     # Check if the SSH config already exists before attempting to write to it
     if [[ ! -f ~/.ssh/config ]]; then
-        # GitHub
-        echo "Host github.com
-        HostName github.com
-        AddKeysToAgent yes
-        UseKeychain yes
-        User git
-        IdentityFile ~/.ssh/github
+        
+        echo "# GitHub
+Host github.com
+    HostName github.com
+    AddKeysToAgent yes
+    UseKeychain yes
+    User git
+    IdentityFile ~/.ssh/github
 
-        # GitLab
-        Host gitlab.com
-        HostName gitlab.com
-        User git
-        AddKeysToAgent yes
-        UseKeychain yes
-        IdentityFile ~/.ssh/gitlab" >> ~/.ssh/config
+# GitLab
+Host gitlab.com
+    HostName gitlab.com
+    User git
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentityFile ~/.ssh/gitlab" >> ~/.ssh/config
     fi
 
     ssh-add --apple-use-keychain ~/.ssh/github
     ssh-add --apple-use-keychain ~/.ssh/gitlab
+
+    gh auth login
 else
     echo "SSH keys already exist. Skipping key generation."
 fi
 
+# macOS Settings
+echo "Changing macOS defaults..."
+defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.spaces spans-displays -bool false
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock "mru-spaces" -bool "false"
+defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+defaults write com.apple.LaunchServices LSQuarantine -bool false
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+defaults write NSGlobalDomain KeyRepeat -int 1
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+defaults write NSGlobalDomain _HIHideMenuBar -bool true
+defaults write NSGlobalDomain AppleHighlightColor -string "0.65098 0.85490 0.58431"
+defaults write NSGlobalDomain AppleAccentColor -int 1
+defaults write com.apple.screencapture location -string "$HOME/Desktop"
+defaults write com.apple.screencapture disable-shadow -bool true
+defaults write com.apple.screencapture type -string "png"
+defaults write com.apple.finder DisableAllAnimations -bool true
+defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
+defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
+defaults write com.apple.finder ShowMountedServersOnDesktop -bool false
+defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
+defaults write com.apple.Finder AppleShowAllFiles -bool true
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+defaults write com.apple.finder ShowStatusBar -bool false
+defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool YES
+defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+defaults write com.apple.Safari IncludeDevelopMenu -bool true
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
+
+
 echo "Installing apps"
+
+# Check if Homebrew taps are already installed
+if brew tap | grep -q 'homebrew/cask-fonts'; then
+    echo "Homebrew cask-fonts tap is already installed."
+else
+    echo "Installing Homebrew cask-fonts tap..."
+    brew tap homebrew/cask-fonts
+fi
+
+if brew tap | grep -q 'FelixKratz/formulae'; then
+    echo "Homebrew FelixKratz/formulae tap is already installed."
+else
+    echo "Installing Homebrew FelixKratz/formulae tap..."
+    brew tap FelixKratz/formulae
+fi
 
 # Development Tools
 brew install tree # Directory Viewer
@@ -165,6 +207,7 @@ then
     echo "source $(brew --prefix nvm)/nvm.sh" >> ~/.zshrc
     source ~/.zshrc
     nvm install --lts
+    node -v && nvm -v
 else
     echo "NVM is already installed. Skipping NVM installation."
 fi
@@ -174,18 +217,17 @@ if command -v npm &> /dev/null
 then
     echo "npm is installed. Configuring npm..."
     npm install -g npm@latest
+    npm --init-author-name "Thevetat"
+    npm --init-author-email "thevetat@proton.me"
+    npm --init-author-url "https://www.thevetatsramblings.com"
 else
     echo "npm is not installed. Attempting to reinstall Node and npm..."
     nvm install --lts
 fi
 
-npm set init.author.name "Thevetat"
-npm set init.author.email "thevetat@proton.me"
-npm set init.author.url "https://www.thevetatsramblings.com"
-
-
 #Go
 echo "Installing Go"
+export PATH=$PATH:/usr/local/go/bin
 go install mvdan.cc/gofumpt@latest
 go install -v github.com/incu6us/goimports-reviser/v3@latest
 go install github.com/fatih/gomodifytags@latest
@@ -213,54 +255,13 @@ cargo install silicon
 cargo install ripgrep
 cargo install --locked zellij
 cargo install deno --locked
-echo 'eval "$(zoxide init zsh)"\n' >> ~/.zshrc
-source $HOME/.zshrc
 
-mkdir ~/.config/zellij
-zellij setup --dump-config > ~/.config/zellij/config.kdl
+source $HOME/.zshrc
 
 # Mac App Store Apps
 echo "Installing Mac App Store Apps..."
 mas install 497799835 #xCode
 mas install 1480933944 #Vimari
-
-# macOS Settings
-echo "Changing macOS defaults..."
-defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
-defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-defaults write com.apple.spaces spans-displays -bool false
-defaults write com.apple.dock autohide -bool true
-defaults write com.apple.dock "mru-spaces" -bool "false"
-defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
-defaults write com.apple.LaunchServices LSQuarantine -bool false
-defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
-defaults write NSGlobalDomain KeyRepeat -int 1
-defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
-defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-defaults write NSGlobalDomain _HIHideMenuBar -bool true
-defaults write NSGlobalDomain AppleHighlightColor -string "0.65098 0.85490 0.58431"
-defaults write NSGlobalDomain AppleAccentColor -int 1
-defaults write com.apple.screencapture location -string "$HOME/Desktop"
-defaults write com.apple.screencapture disable-shadow -bool true
-defaults write com.apple.screencapture type -string "png"
-defaults write com.apple.finder DisableAllAnimations -bool true
-defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
-defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
-defaults write com.apple.finder ShowMountedServersOnDesktop -bool false
-defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
-defaults write com.apple.Finder AppleShowAllFiles -bool true
-defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
-defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
-defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
-defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
-defaults write com.apple.finder ShowStatusBar -bool false
-defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool YES
-defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
-defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
-defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
 
 # Copying and checking out configuration files
 echo "Planting Configuration Files..."
@@ -275,7 +276,6 @@ rm -rf /tmp/SFMono_Nerd_Font/
 curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v1.0.4/sketchybar-app-font.ttf -o $HOME/Library/Fonts/sketchybar-app-font.ttf
 
 source $HOME/.zshrc
-cfg config --local status.showUntrackedFiles no
 
 # Python Packages
 echo "Installing Python Packages..."

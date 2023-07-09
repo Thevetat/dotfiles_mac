@@ -8,6 +8,17 @@ else
     xcode-select --install
 fi
 
+# Folders
+echo "Scaffolding Folders"
+mkdir ~/Utilities
+mkdir ~/Git
+mkdir ~/Git/Webdev
+mkdir ~/Git/Typescript
+mkdir ~/Git/Rust
+mkdir ~/Git/Go
+mkdir ~/Git/Python
+mkdir ~/Git/External
+
 # Prezto
 if [ ! -f "${ZDOTDIR:-$HOME}/.zpreztorc" ]; then
   rm -r "${ZDOTDIR:-$HOME}/.zshrc"
@@ -25,7 +36,7 @@ if which brew > /dev/null; then
 else
     echo "Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/thevetat/.zprofile
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
     eval "$(/opt/homebrew/bin/brew shellenv)"
     export HOMEBREW_NO_ENV_HINTS=1
     brew analytics off
@@ -227,14 +238,14 @@ fi
 
 #Go
 echo "Installing Go"
-export PATH=$PATH:/usr/local/go/bin
+export PATH="$PATH:/Users/thevetat/go/bin"
 go install mvdan.cc/gofumpt@latest
 go install -v github.com/incu6us/goimports-reviser/v3@latest
 go install github.com/fatih/gomodifytags@latest
-echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.zshrc
+echo "export PATH=\"$PATH:/Users/thevetat/go/bin\"" >> ~/.zshrc
 
 # Rust
-"Installing Rust and cargo related packages"
+echo "Installing Rust and cargo related packages"
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
 echo "source \"$HOME/.cargo/env\"" >> ~/.zshrc
@@ -268,6 +279,10 @@ echo "Planting Configuration Files..."
 [ ! -d "$HOME/dotfiles" ] && git clone --bare git@github.com:Thevetat/dotfiles_mac.git $HOME/dotfiles
 git --git-dir=$HOME/dotfiles/ --work-tree=$HOME checkout main
 
+source ~/.aliases
+source ~/.zprofile
+source ~/.zsh_functions\n' >> ~/.zshrc
+
 # Installing Fonts
 git clone git@github.com:shaunsingh/SFMono-Nerd-Font-Ligaturized.git /tmp/SFMono_Nerd_Font
 mv /tmp/SFMono_Nerd_Font/* $HOME/Library/Fonts
@@ -293,6 +308,8 @@ pip install tensorflow-macos
 pip install tensorflow-metal
 pip install debugpy
 pip install sklearn
+
+echo 'eval "$(zoxide init zsh)"\n' >> ~/.zshrc
 
 # Start Services
 echo "Starting Services (grant permissions)..."

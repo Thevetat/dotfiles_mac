@@ -8,6 +8,17 @@ else
     xcode-select --install
 fi
 
+# Prezto
+if [ ! -f "${ZDOTDIR:-$HOME}/.zpreztorc" ]; then
+  rm -r "${ZDOTDIR:-$HOME}/.zshrc"
+  rm -r "${ZDOTDIR:-$HOME}/.zshenv"
+  git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto" && setopt EXTENDED_GLOB
+  for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+    ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+  done
+fi
+
+
 # Check if Homebrew is already installed
 if which brew > /dev/null; then
     echo "Homebrew is already installed."
@@ -34,13 +45,7 @@ else
     brew tap FelixKratz/formulae
 fi
 
-# Prezto
-rm -r .zshrc
-rm -r .zshenv
-git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto" && setopt EXTENDED_GLOB
-for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-  ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-done
+
 
 # Git
 echo "Configuring Git"
@@ -151,7 +156,6 @@ brew install --cask monitorcontrol # Monitor Settings
 brew install --cask sloth # Network Connections Viewer
 
 # Fonts
-brew tap homebrew/cask-fonts
 brew install --cask font-jetbrains-mono-nerd-font # High-quality font for developers
 
 # Check if NVM is installed

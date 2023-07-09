@@ -25,9 +25,9 @@ if which brew > /dev/null; then
 else
     echo "Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    brew analytics off
     (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/thevetat/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
+    brew analytics off
 fi
 
 # Check if Homebrew taps are already installed

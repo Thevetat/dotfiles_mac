@@ -53,33 +53,42 @@ git config --global init.defaultBranch main
 
 # SSH
 echo "Configuring SSH"
-mkdir ~/.ssh
-cd ~/.ssh
 
-ssh-keygen -t ed25519 -C "github"
-ssh-keygen -t ed25519 -C "gitlab"
+# Check if the SSH keys already exist before attempting to generate them
+if [[ ! -f ~/.ssh/github ]] && [[ ! -f ~/.ssh/gitlab ]]; then
+    echo "Configuring SSH"
+    mkdir -p ~/.ssh
+    cd ~/.ssh
 
-touch ~/.ssh/config
+    ssh-keygen -t ed25519 -C "github" -f "github"
+    ssh-keygen -t ed25519 -C "gitlab" -f "gitlab"
 
-# GitHub
-echo "Host github.com
-  HostName github.com
-  AddKeysToAgent yes
-  UseKeychain yes
-  User git
-  IdentityFile ~/.ssh/github
+    touch ~/.ssh/config
 
-# GitLab
-Host gitlab.com
-  HostName gitlab.com
-  User git
-  AddKeysToAgent yes
-  UseKeychain yes
-  IdentityFile ~/.ssh/gitlab" >> ~/.ssh/config
+    # Check if the SSH config already exists before attempting to write to it
+    if [[ ! -f ~/.ssh/config ]]; then
+        # GitHub
+        echo "Host github.com
+        HostName github.com
+        AddKeysToAgent yes
+        UseKeychain yes
+        User git
+        IdentityFile ~/.ssh/github
 
+        # GitLab
+        Host gitlab.com
+        HostName gitlab.com
+        User git
+        AddKeysToAgent yes
+        UseKeychain yes
+        IdentityFile ~/.ssh/gitlab" >> ~/.ssh/config
+    fi
 
-ssh-add --apple-use-keychain ~/.ssh/github
-ssh-add --apple-use-keychain ~/.ssh/gitlab
+    ssh-add --apple-use-keychain ~/.ssh/github
+    ssh-add --apple-use-keychain ~/.ssh/gitlab
+else
+    echo "SSH keys already exist. Skipping key generation."
+fi
 
 echo "Installing apps"
 

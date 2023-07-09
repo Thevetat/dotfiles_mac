@@ -148,6 +148,7 @@ brew install --cask font-jetbrains-mono-nerd-font # High-quality font for develo
 # NVM
 echo "Installing node and configuring NPM"
 echo "source $(brew --prefix nvm)/nvm.sh" >> ~/.zshrc
+source ~/.zshrc
 nvm install --lts
 npm install -g npm@latest
 npm set init.author.name "Thevetat"

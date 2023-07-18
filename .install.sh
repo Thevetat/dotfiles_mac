@@ -183,6 +183,7 @@ brew install lulu # Firewall
 brew install ifstat # Network Statistic
 brew install sf-symbols # Symbol Font
 brew install maccy # Clipboard manager
+brew install --cask insomnia # Api Client
 
 # Browsers
 brew install --cask brave-browser # Privacy focused browser

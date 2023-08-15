@@ -209,6 +209,7 @@ brew install --cask sublime-text # Text editor for code, markup and prose
 brew install --cask alacritty # Terminal Emulator
 brew install --cask monitorcontrol # Monitor Settings
 brew install --cask sloth # Network Connections Viewer
+brew install --cask dbeaver-community
 
 # Fonts
 brew install --cask font-jetbrains-mono-nerd-font # High-quality font for developers
